@@ -3,7 +3,7 @@ import ContactForm from './ContactForm/ContactForm'
 import ContactList from './ContactList/ContactList'
 import Filter from './Filter/Filter'
 
-export default class Section extends Component{
+export default class App extends Component{
 
     constructor(props){
         super(props);
