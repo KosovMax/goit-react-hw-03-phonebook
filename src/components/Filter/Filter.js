@@ -2,12 +2,8 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types';
 
 export default class Filter extends Component{
-    constructor(props){
-        super(props)
-
-        this.state = {
-            filter: this.props.filter
-        }
+    state = {
+        filter: this.props.filter
     }
 
     static defaultProps = {
@@ -18,15 +14,13 @@ export default class Filter extends Component{
         filter: PropTypes.string.isRequired
     }
 
-    handleChange = evt => {
+    handleChange = ({target}) => {
 
-        console.log("filter", evt.target.value)
+        this.setState({ filter: target.value });
 
-        this.setState({ filter: evt.target.value });
+        const { onFilter } = this.props;
 
-        const { changeFilter } = this.props;
-
-        changeFilter(evt.target.value);
+        onFilter(target.value);
 
     }
 

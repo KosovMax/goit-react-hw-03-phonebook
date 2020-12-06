@@ -5,52 +5,65 @@ import Filter from './Filter/Filter'
 
 export default class App extends Component{
 
-    constructor(props){
-        super(props);
-
-        this.state = {
-            contacts: JSON.parse(localStorage.getItem('CONTACTS')) || [],
-            name: '',
-            number: '',
-            filter:''
-        }
+    state = {
+        contacts: [],
+        filter: ''
     }
 
-    updatePhonebook = (data) => {
-        const $this = this;
-        Object.keys(data).forEach(k => {
-            const v = data[k];
-            $this.setState({ [k]: v })
-        });
+    addContact = (newContact) => {
+        this.setState(prevState => {
+            return{ contacts: [...prevState.contacts, newContact] }
+        })
+    }
+
+    findName = (name) => {
+        const { contacts } = this.state;
+        return contacts.find((contact) => {
+            return contact.name === name
+        })
     }
 
     updateFilter = (filter) =>{
       this.setState({filter:filter})
     }
 
-    updateContacts = (contacts) => {
-      this.setState({contacts:contacts})
+    removeContactId = (id) => {
+        this.setState(prevState => {
+            return {contacts: prevState.contacts.filter(contact => contact.id !== id)}
+        });
     }
 
-    componentDidUpdate = (prevProps, prevState, snapshot) => {
-        // console.log(prevProps, prevState, snapshot);
-        localStorage.setItem( 'CONTACTS', JSON.stringify(prevState.contacts) );
+    componentDidMount = () => {
+        const parseJsonContacts = JSON.parse(localStorage.getItem('CONTACTS')) || [];
+
+        this.setState({contacts: parseJsonContacts})
+    }
+
+    componentDidUpdate = (prevProps, prevState) => {
+        // console.log(prevProps, prevState)
+        // console.log(this.state);
+
+        const { contacts } = this.state;
+
+        if(contacts !== prevState.contacts){
+            localStorage.setItem('CONTACTS', JSON.stringify(contacts));
+        }
     }
 
     render(){
 
         console.log(this.state);
 
-        const { name, contacts, filter} = this.state;
+        const { contacts, filter } = this.state;
 
         return (
            <>   
                 <h2>Phonebook</h2>
-                <ContactForm name={name} contacts={contacts} changePhonebook={this.updatePhonebook} />
+                <ContactForm onFindName={this.findName} onAddContact ={this.addContact} />
 
                 <h2>Contacts</h2>
-                <Filter filter={filter} changeFilter={this.updateFilter} />
-                <ContactList filter={filter} contacts={contacts} changeContacts={this.updateContacts}/> 
+                <Filter filter={filter} onFilter={this.updateFilter} />
+                <ContactList contacts={contacts} filter={filter} removeContactId={this.removeContactId}/> 
            </>
         );
     }
