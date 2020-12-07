@@ -40,9 +40,6 @@ export default class App extends Component{
     }
 
     componentDidUpdate = (prevProps, prevState) => {
-        // console.log(prevProps, prevState)
-        // console.log(this.state);
-
         const { contacts } = this.state;
 
         if(contacts !== prevState.contacts){
